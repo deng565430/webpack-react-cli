@@ -1,4 +1,6 @@
 const path = require('path');
+// 编译css
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
   // 入口文件
   output: {
@@ -20,16 +22,26 @@ module.exports = {
         ]
       },
       {
-        test: /\.jsx$/,
+        test: /.jsx$/,
         loader: 'babel-loader'
       },
       {
-        test: /\.js$/,
+        test: /.js$/,
         loader: 'babel-loader',
         exclude: [
           path.join(__dirname, '../node_modules')
         ]
-      }
+      },
+      {
+        test: /\.css$/,
+        loaders: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: "css-loader"
+        })
+      },
     ]
-  }
+  },
+  plugins: [
+    new ExtractTextPlugin('css/styles.css'),
+  ]
 }
