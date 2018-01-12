@@ -5,13 +5,14 @@ const webpackMerge = require('webpack-merge');
 const NameAllMdoulesPlugin = require('name-all-modules-plugin');
 
 const baseConfig = require('./webpack.base');
+const util = require('./util');
 const isDev = process.env.NODE_ENV === 'development';
 
 const config = webpackMerge(baseConfig, {
   entry: {
     app: path.join(__dirname, '../src/app.js')
   },
-  // 入口文件
+  // 出口文件
   output: {
     filename: '[name].[hash].js'
   },
@@ -46,7 +47,7 @@ if (isDev) {
     // 服务端压缩是否开启
     compress: true,
     // 映射静态资源目录 已经打包的话需要删除dist目录
-    publicPath: '/public/',
+    publicPath: util.publicPath,
     // 所有404请求返回的html
     historyApiFallback: {
       index: '/public/index.html'
@@ -66,7 +67,7 @@ if (isDev) {
       'react-dom'
     ]
   }
-  config.output.filename = 'static/js/[name].[chunkhash:5].js'
+  config.output.filename = util.staticPath + '/js/[name].[chunkhash:5].js'
   config.plugins.push(
     // 压缩js源码
     new webpack.optimize.UglifyJsPlugin(),

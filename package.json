@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config build/webpack.config.client.js",
     "dev:client": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.config.client.js --open",
-    "start": "npm run dev:client",
+    "start": "rm -rf ./dist && npm run dev:client",
     "lint": "eslint  --ext .js .jsx src/",
     "precommit": "npm run lint"
   },

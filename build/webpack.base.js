@@ -2,6 +2,8 @@ const path = require('path');
 // 编译css
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+const util = require('./util');
+
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -10,7 +12,7 @@ module.exports = {
   // 入口文件
   output: {
     path: path.join(__dirname, '../dist'),
-    publicPath: '/public/',
+    publicPath: util.publicPath,
   },
   // 运行不写后缀
   resolve: {
@@ -61,7 +63,8 @@ module.exports = {
           loader: 'url-loader',
           options: {
             limit: 5000,
-            outputPath: 'static/images/',
+            outputPath: util.staticPath + '/images/',
+            name: '[name].[ext]?[hash]'
           }
         }]
       },
@@ -71,13 +74,14 @@ module.exports = {
           loader: 'url-loader',
           options: {
             limit: 5000,
-            outputPath: 'static/fonts/',
+            outputPath: util.staticPath + '/fonts/',
+            name: '[name].[ext]?[hash]'
           }
         }]
       },
     ]
   },
   plugins: [
-    new ExtractTextPlugin('static/css/styles.css'),
+    new ExtractTextPlugin(util.staticPath + '/css/styles.css'),
   ]
 }
