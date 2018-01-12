@@ -2,6 +2,8 @@ import React from 'react';
 import { Button } from 'antd-mobile';
 import './app.css';
 
+const imgUrl = require('./test.jpg');
+
 export default class App extends React.Component {
   constructor(props) {
     super(props)
@@ -10,6 +12,14 @@ export default class App extends React.Component {
     }
   }
   render() {
-    return <Button>{this.state.data}</Button>
+    return (
+      <div>
+        <Button>{this.state.data}</Button>
+        <img src={imgUrl} alt="" />
+        <div className="img">
+          222
+        </div>
+      </div>
+    )
   }
 }

@@ -66,7 +66,7 @@ if (isDev) {
       'react-dom'
     ]
   }
-  config.output.filename = '[name].[chunkhash:5].js'
+  config.output.filename = 'static/js/[name].[chunkhash:5].js'
   config.plugins.push(
     // 压缩js源码
     new webpack.optimize.UglifyJsPlugin(),
