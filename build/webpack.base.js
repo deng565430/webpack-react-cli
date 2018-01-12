@@ -1,11 +1,23 @@
 const path = require('path');
 // 编译css
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const autoprefixer = require('autoprefixer');
 
 const util = require('./util');
 
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
+}
+
+// css 解析配置
+const postcssOpts = {
+  ident: 'postcss',
+  plugins: () => [
+    autoprefixer({
+      browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4'],
+    }),
+    // pxtorem({ rootValue: 100, propWhiteList: [] })
+  ],
 }
 
 module.exports = {
@@ -54,7 +66,15 @@ module.exports = {
         test: /\.css$/,
         loaders: ExtractTextPlugin.extract({
           fallback: "style-loader",
-          use: 'css-loader'
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                minimize: true
+              }
+            },
+            { loader: 'postcss-loader', options: postcssOpts }
+          ]
         })
       },
       {

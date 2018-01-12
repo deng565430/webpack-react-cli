@@ -10,7 +10,7 @@ const isDev = process.env.NODE_ENV === 'development';
 
 const config = webpackMerge(baseConfig, {
   entry: {
-    app: path.join(__dirname, '../src/app.js')
+    app: path.join(__dirname, '../src/app/app.js')
   },
   // 出口文件
   output: {
@@ -18,7 +18,7 @@ const config = webpackMerge(baseConfig, {
   },
   plugins: [
     new HTMLPlugin({
-      template: path.join(__dirname, '../src/template.html')
+      template: path.join(__dirname, '../src/app/template.html')
     })
   ]
 })
@@ -28,7 +28,7 @@ if (isDev) {
   config.entry = {
     app: [
       'react-hot-loader/patch', // 热更新需要配置的内容
-      path.join(__dirname, '../src/app.js')
+      path.join(__dirname, '../src/app/app.js')
     ]
   }
   config.devServer = {
@@ -61,7 +61,7 @@ if (isDev) {
   config.plugins.push(new webpack.HotModuleReplacementPlugin())
 } else {
   config.entry = {
-    app: path.join(__dirname, '../src/app.js'),
+    app: path.join(__dirname, '../src/app/app.js'),
     vendor: [
       'react',
       'react-dom'
