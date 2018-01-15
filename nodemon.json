@@ -1,0 +1,15 @@
+{
+  "restartable": "rs",
+  "ignone": [
+    "git",
+    "node_modules/**/node_modules",
+    ".eslintrc",
+    "src/app",
+    "build"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "verbose": true,
+  "ext": "js"
+}

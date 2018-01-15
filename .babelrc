@@ -1,19 +1,10 @@
 {
-  "presets": [
-   [
-    "env",
-    {
-      "loose": true
-    }
-  ],
-    "react"
-  ],
   "plugins": [
-    "react-hot-loader/babel",
     [
       "import",
       {
-        "libraryName": "antd-mobile", "style": "css"
+        "libraryName": "antd-mobile",
+        "style": "css"
       }
     ]
   ]

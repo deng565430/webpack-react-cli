@@ -18,7 +18,7 @@ const config = webpackMerge(baseConfig, {
   },
   plugins: [
     new HTMLPlugin({
-      template: path.join(__dirname, '../src/template.html')
+      template: path.join(__dirname, '../src/app/template.html')
     })
   ]
 })
@@ -28,7 +28,7 @@ if (isDev) {
   config.entry = {
     app: [
       'react-hot-loader/patch', // 热更新需要配置的内容
-      path.join(__dirname, '../src/app.js')
+      path.join(__dirname, '../src/app/app.js')
     ]
   }
   config.devServer = {
@@ -54,14 +54,14 @@ if (isDev) {
     },
     // 代理
     proxy: {
-      '/api': 'http://localhost:3333'
+      '/api': 'http://localhost:8081'
     }
   }
   // 配置无刷新 需要配置  => 是否热更新 hot: true, app.js里面 .babelrc  "plugins": ["react-hot-loader/babel"]
   config.plugins.push(new webpack.HotModuleReplacementPlugin())
 } else {
   config.entry = {
-    app: path.join(__dirname, '../src/app.js'),
+    app: path.join(__dirname, '../src/app/app.js'),
     vendor: [
       'react',
       'react-dom'
