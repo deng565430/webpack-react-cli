@@ -1,11 +1,11 @@
 class IndexController {
-  constructor(ctx) {
-    this.ctx = ctx;
+  constructor (ctx) {
+    this.ctx = ctx
   }
-  index() {
+  index () {
     return async (ctx, next) => {
       ctx.body = '123'
     }
   }
 }
-export default IndexController;
+export default IndexController

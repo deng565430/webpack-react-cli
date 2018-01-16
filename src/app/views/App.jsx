@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Routes from '../config/router';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import Routes from '../config/router'
 
 export default class App extends React.Component {
   componentDidMount() {
@@ -8,12 +8,12 @@ export default class App extends React.Component {
   }
   render() {
     return [
-      <div>
+      <div key="top">
         <Link to="/list" key="list">首页</Link>
         <br />
         <Link to="/detail" key="detail">详情页</Link>
       </div>,
-      <Routes />,
+      <Routes key="btn" />,
     ]
   }
 }

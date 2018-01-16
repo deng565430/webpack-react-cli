@@ -1,18 +1,18 @@
-import _ from 'lodash';
-import local from './local';
+import _ from 'lodash'
+import local from './local'
 
 const server = {
-  "port": 80
-};
+  'port': 80
+}
 
 let config = {
-  "env": process.env.NODE_ENV
-};
+  'env': process.env.NODE_ENV
+}
 
-if (config.env == "production") {
+if (config.env === 'production') {
   config = _.extend(server)
 } else {
   config = _.extend(local)
 }
 
-export default config;
+export default config

@@ -1,9 +1,9 @@
 require('babel-core/register')({
   'presets': [
     'env',
-    ["latest-node", { "target": "current" }]
+    ['latest-node', { 'target': 'current' }]
   ]
-});
+})
 
-require('babel-polyfill');
-require('./app');
+require('babel-polyfill')
+require('./app')

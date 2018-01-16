@@ -11,7 +11,7 @@
     "dev:client": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.config.client.js --open",
     "dev:server": "nodemon src/server/start.js",
     "dev": "npm run clear && npm run dev:client",
-    "lint": "eslint  --ext .js .jsx src/",
+    "lint": "eslint  --ext .js .jsx src/app",
     "precommit": "npm run lint"
   },
   "repository": {

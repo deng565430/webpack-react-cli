@@ -24,11 +24,11 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ["es2015", { "loose": true }],
-              "stage-1",
-              "react"
+              ['es2015', { 'loose': true }],
+              'stage-1',
+              'react'
             ],
-            plugins: ["react-hot-loader/babel","transform-decorators-legacy","transform-decorators-legacy"]
+            plugins: ['react-hot-loader/babel','transform-decorators-legacy','transform-decorators-legacy']
           }
         }],
         exclude: [
@@ -36,7 +36,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(png|jpe?g|gif|svg)$/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]?[hash]'

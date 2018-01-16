@@ -7,7 +7,7 @@ export default class ToplicDetail extends React.Component {
   render() {
     return (
       <div>
-        ToplicDetail
+        ToplicDetailddd
       </div>
     )
   }
