@@ -6,8 +6,8 @@ export default {
   AppState,
 }
 
-export const createStoreMap = () => {
-  return {
+export const createStoreMap = () => (
+  {
     appState: new AppState(),
   }
-}
+)

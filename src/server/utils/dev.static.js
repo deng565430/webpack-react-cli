@@ -53,8 +53,8 @@ const getTemplate = () => {
 const InitController = {
   init (app, router) {
     app.use(proxy({
-      host: 'http://localhost:8888/public/',     // proxy alicdn.com...
-      match: /^(?!\/index\.html)/ // ...everything except /dontproxy.html
+      host: 'http://localhost:8888',     // 代理的地址
+      match: /.js$/ // 代理只匹配以js结尾的
     }))
     let template
     getTemplate().then((res) => template = res)
@@ -70,6 +70,7 @@ const InitController = {
           if (routerContext.url) {
             ctx.status = 302
             ctx.redirect(routerContext.url)
+            ctx.body = 'Redirecting to shopping cart';
             return
           }
 

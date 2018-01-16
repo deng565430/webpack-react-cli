@@ -1,5 +1,5 @@
 const config = {
-  publicPath: '',
+  publicPath: '/public/',
   staticPath: 'static'
 }
 

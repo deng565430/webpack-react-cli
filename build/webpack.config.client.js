@@ -33,7 +33,7 @@ if (isDev) {
   }
   config.devServer = {
     // 设置基本目录结构 服务哪里的代码 这里是public下面的
-    contentBase: path.join(__dirname, '../dist'),
+    // contentBase: path.join(__dirname, '../dist'),
     // 服务器的IP地址， 可以使用IP也可以使用localhost 0.0.0.0
     host: '0.0.0.0',
     // 配置服务端口
