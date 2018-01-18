@@ -1,9 +1,12 @@
 import axios from 'axios'
 import path from 'path'
 import proxy from 'koa-proxy'
+import serialize from 'serialize-javascript'
+import ejs from 'ejs'
 import webpack from 'webpack'
 // 内存中读写文件
 import MemoryFs from 'memory-fs'
+import asyncBootstrap from 'react-async-bootstrapper'
 import ReactDomServer from 'react-dom/server'
 
 import webpackServerConfig from '../../../build/webpack.config.server'
@@ -42,12 +45,19 @@ serverCompiler.watch({}, (err, stats) => {
 
 const getTemplate = () => {
   return new Promise((resolve, reject) => {
-    axios.get('http://localhost:8888/public/index.html')
+    axios.get('http://localhost:8888/public/server.ejs')
       .then(res => {
         resolve(res.data)
       })
       .catch(reject)
   })
+}
+
+const getStoreState = (stores) => {
+  return Object.keys(stores).reduce((result, storeName) => {
+    result[storeName] = stores[storeName].toJson()
+    return result
+  }, {})
 }
 
 const InitController = {
@@ -56,29 +66,34 @@ const InitController = {
       host: 'http://localhost:8888',     // 代理的地址
       match: /.js$/ // 代理只匹配以js结尾的
     }))
-    let template
-    getTemplate().then((res) => template = res)
     app.use(router(_ => {
       _.get('*', async (ctx) => {
-        console.log()
-        await getTemplate().then(template => {
-          const routerContext = {}
-          const app = serverBundle(createStoreMap(), routerContext, ctx.request.url)
+        const template = await getTemplate().then(template => template)
+        const routerContext = {}
+        const stores = createStoreMap && createStoreMap()
+        const app = serverBundle(stores, routerContext, ctx.request.url)
 
-          const content = ReactDomServer.renderToString(app)
+        // 等数据处理完毕
+        await asyncBootstrap(app)
 
-          if (routerContext.url) {
-            ctx.status = 302
-            ctx.redirect(routerContext.url)
-            ctx.body = 'Redirecting to shopping cart';
-            return
-          }
+        const state = getStoreState(stores)
 
-          ctx.body = template.replace('<!-- app -->', content)
+        if (routerContext.url) {
+          ctx.status = 302
+          ctx.redirect(routerContext.url)
+          ctx.body = 'Redirecting to shopping cart';
+          return
+        }
+        const content = ReactDomServer.renderToString(app)
+        const html = ejs.render(template, {
+          appString: content,
+          initialState: serialize(state),
         })
+        ctx.body =  html
       })
     }))
   }
 }
+
 
 export default InitController
