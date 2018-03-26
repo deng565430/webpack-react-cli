@@ -3,6 +3,11 @@ const HTMLPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const NameAllMdoulesPlugin = require('name-all-modules-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+// 优化打包速度 开启多线程打包
+const HappyPack = require('happypack');
+const os = require('os');
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 
 const baseConfig = require('./webpack.base');
 const util = require('./util');
@@ -17,6 +22,12 @@ const config = webpackMerge(baseConfig, {
     filename: '[name].[hash].js'
   },
   plugins: [
+    new HappyPack({
+      id: 'styles',
+      threads: happyThreadPool.size,
+      loaders: [ 'style-loader', 'css-loader']
+    }),
+    new ExtractTextPlugin("styles.css"),
     new HTMLPlugin({
       template: path.join(__dirname, '../src/app/template.html')
     }),

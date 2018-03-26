@@ -1,9 +1,15 @@
-const path = require('path')
+const path = require('path');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const util = require("./util");
+
+function resolve(str) {
+  return path.join(__dirname, str)
+}
 
 module.exports = {
   output: {
-    path: path.join(__dirname, '../dist'),
-    publicPath: '/public/'
+    path: resolve('../dist'),
+    publicPath: util.publicPath
   },
   resolve: {
     extensions: ['.js', '.jsx']
@@ -15,11 +21,11 @@ module.exports = {
         test: /.(js|jsx)$/,
         loader: 'eslint-loader',
         exclude: [
-          path.resolve(__dirname, '../node_modules')
+          resolve('../node_modules')
         ]
       },
       {
-        test: /.jsx?$/,
+        test: /\.jsx?$/,
         use: [{
           loader: 'babel-loader',
           options: {
@@ -32,8 +38,15 @@ module.exports = {
           }
         }],
         exclude: [
-          path.join(__dirname, '../node_modules')
+          resolve('../node_modules')
         ]
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: "'happypack/loader?id=styles'"
+        })
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/,
@@ -43,5 +56,5 @@ module.exports = {
         }
       }
     ]
-  },
+  }
 }

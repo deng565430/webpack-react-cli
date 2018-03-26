@@ -1,24 +1,35 @@
 import axios from 'axios'
 import path from 'path'
 import proxy from 'koa-proxy'
-import serialize from 'serialize-javascript'
-import ejs from 'ejs'
 import webpack from 'webpack'
 // 内存中读写文件
 import MemoryFs from 'memory-fs'
-import asyncBootstrap from 'react-async-bootstrapper'
-import ReactDomServer from 'react-dom/server'
+import serverRender from './server-render'
 
 import webpackServerConfig from '../../../build/webpack.config.server'
 
-const Module = module.constructor
+const NativeMoudule = require('module')
+const vm = require('vm')
+// const Module = module.constructor
+
+const getModuleFromString = (bundle, filename) => {
+  const m = {exports: {}}
+  const wrapper = NativeMoudule.wrap(bundle)
+  const script = new vm.Script(wrapper, {
+    filename: filename,
+    displayErrors: true
+  })
+  const result = script.runInThisContext()
+  result.call(m.exports, m.exports, require, m)
+  return m
+}
 
 const mfs = new MemoryFs()
 // 监听文件输出内容变化
 const serverCompiler = webpack(webpackServerConfig)
 // webpack配置项 从内存中读取文件
 serverCompiler.outputFileSystem = mfs
-let serverBundle, createStoreMap
+let serverBundle
 serverCompiler.watch({}, (err, stats) => {
   if (err) throw err
   stats.toJson()
@@ -36,28 +47,21 @@ serverCompiler.watch({}, (err, stats) => {
 
   const bundle = mfs.readFileSync(bundlePath, 'utf-8')
 
-  const m = new Module()
+  const m = getModuleFromString(bundle, "server-entry.js");
+  /* const m = new Module()
   // 一定要指定文件名 不然无法再缓存中存储
-  m._compile(bundle, 'server-entry.js')
-  serverBundle = m.exports.default
-  createStoreMap = m.exports.createStoreMap
+  m._compile(bundle, 'server-entry.js') */
+  serverBundle = m.exports
 })
 
 const getTemplate = () => {
   return new Promise((resolve, reject) => {
-    axios.get('http://localhost:8888/public/server.ejs')
+    axios.get('http://localhost:8888/server.ejs')
       .then(res => {
         resolve(res.data)
       })
       .catch(reject)
   })
-}
-
-const getStoreState = (stores) => {
-  return Object.keys(stores).reduce((result, storeName) => {
-    result[storeName] = stores[storeName].toJson()
-    return result
-  }, {})
 }
 
 const InitController = {
@@ -68,28 +72,12 @@ const InitController = {
     }))
     app.use(router(_ => {
       _.get('*', async (ctx) => {
-        const template = await getTemplate().then(template => template)
-        const routerContext = {}
-        const stores = createStoreMap && createStoreMap()
-        const app = serverBundle(stores, routerContext, ctx.request.url)
-
-        // 等数据处理完毕
-        await asyncBootstrap(app)
-
-        const state = getStoreState(stores)
-
-        if (routerContext.url) {
-          ctx.status = 302
-          ctx.redirect(routerContext.url)
-          ctx.body = 'Redirecting to shopping cart';
-          return
+        if (!serverBundle) {
+          return ctx.body = 'waiting for compile, refresh later'
         }
-        const content = ReactDomServer.renderToString(app)
-        const html = ejs.render(template, {
-          appString: content,
-          initialState: serialize(state),
-        })
-        ctx.body =  html
+        const template = await getTemplate().then(template => template)
+        const html = await serverRender(serverBundle, template, ctx)
+        ctx.body = html
       })
     }))
   }

@@ -2,7 +2,7 @@ import _ from 'lodash'
 import local from './local'
 
 const server = {
-  'port': 80
+  'port': 8082
 }
 
 let config = {

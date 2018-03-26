@@ -5,13 +5,13 @@ import Router from 'koa-simple-router'
 import bodyParser from 'koa-bodyparser'
 import fs from 'fs'
 // import ReactSSR from 'react-dom/server'
+import serverRender from './utils/server-render'
 
 import path from 'path'
 
 // import InitController from './controllers/InitController'
 import Controller from './utils/dev.static'
 import config from './config/main'
-
 // 读取模板文件
 
 const app = new Koa()
@@ -22,14 +22,13 @@ app.use(bodyParser())
 const isDev = process.env.NODE_ENV === 'development'
 
 if (!isDev) {
-  const template = fs.readFileSync(path.join(__dirname, '../../dist/index.html'), 'utf8')
-  app.use(KoaStatic(path.join(__dirname, '..', '../dist')))
-  app.get('*', (ctx, next) => {
-    // const appString = ReactSSR.renderToString(serverEntry)
-    // ctx.body = appString
-    ctx.body = 'hello'
-  })
-  app.use(Router(_ => _.get('/', (ctx) => ctx.body = template.replace('<!-- <app></app> -->', '<div>服务端渲染</div>'))))
+  const serverEntrt = require('../../dist/server-entry')
+  const template = fs.readFileSync(path.join(__dirname, '../../dist/server.ejs'), 'utf8')
+  app.use(KoaStatic(path.join(__dirname, '..', '../dist/')))
+  app.use(Router(_ => _.get('*', async (ctx) => {
+    const tem = await serverRender(serverEntrt, template, ctx)
+    ctx.body = tem
+  })))
 
 } else {
   Controller.init(app, Router)

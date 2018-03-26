@@ -8,6 +8,8 @@ module.exports = webpackMerge(baseConfig, {
   entry: {
     app: path.join(__dirname, '../src/app/server-entry.js'),
   },
+  // 不包含引用类库的代码 服务端渲染只需要打包写的代码
+  externals: Object.keys(require('../package.json').dependencies),
   output: {
     filename: 'server-entry.js',
     // 使用最新commonjs加载模块的方案
